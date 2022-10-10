@@ -1,9 +1,11 @@
 import React from 'react';
+import Categories from '../components/Categories';
 
 export default class Home extends React.Component {
   render() {
     return (
       <>
+        <Categories />
         <input
           type="text"
         />
