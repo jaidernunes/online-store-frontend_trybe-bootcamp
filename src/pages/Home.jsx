@@ -16,7 +16,7 @@ export default class Home extends React.Component {
             data-testid="shopping-cart-button"
             to="/cart"
           >
-          Enter
+            Enter
           </Link>
         </div>
       </>
