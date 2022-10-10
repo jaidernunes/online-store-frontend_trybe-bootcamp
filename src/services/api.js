@@ -6,7 +6,9 @@ export async function getCategories() {
 export async function getProductsFromCategoryAndQuery(categoryId, query) {
   if (categoryId) {
     const response = await fetch(` https://api.mercadolibre.com/sites/MLB/search?category=${categoryId}`);
-    return response.json();
+    // return response.json(); MODIFICADO TESTE JAIDER - ADDED LINHAS 10 E 11
+    const dataTest = await response.json();
+    return dataTest;
   }
   const response = await fetch(`https://api.mercadolibre.com/sites/MLB/search?category=${categoryId}_ID&q=${query}`);
   const data = await response.json();
