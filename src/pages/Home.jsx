@@ -6,24 +6,40 @@ const homeInitialMessage = (
     Digite algum termo de pesquisa ou escolha uma categoria.
   </h3>
 );
-// const searchNoneFound = (<h3>Nenhum produto foi encontrado</h3>);
+const searchNoneFound = (<h3>Nenhum produto foi encontrado</h3>);
 
 export default class Home extends React.Component {
   state = {
     homeDisplay: homeInitialMessage,
+    searchInput: '',
   };
 
   render() {
     const { state } = this;
+    const { searchInput } = state;
 
-    const handleSearch = async (query) => {
-      const searchResponse = await getProductsFromCategoryAndQuery(query);
-      const searchResults = searchResponse.results;
+    const handleChange = ({ target }) => {
+      const { name } = target;
+      const value = target.type === 'checkbox' ? target.checked : target.value;
 
       this.setState({
-        homeDisplay: homeInitialMessage,
+        [name]: value,
       });
+    };
 
+    const handleSearch = async (query) => {
+      const searchResponse = await getProductsFromCategoryAndQuery(undefined, query);
+      const searchResults = searchResponse.results;
+
+      // RETORNA MENSAGEM SE NAO ENCONTRAR NADA
+      if (searchResults.length === 0) {
+        this.setState({
+          homeDisplay: searchNoneFound,
+        });
+        return;
+      }
+
+      // MOSTRA TODOS OS ENCONTRADOS
       const resultsMap = await searchResults.map((item) => (
         <div key={ item.id } data-testid="product">
           <h4>{item.title}</h4>
@@ -31,23 +47,9 @@ export default class Home extends React.Component {
           <h5>{item.price}</h5>
         </div>
       ));
-
-      // console.log('searchResponse');
-      // console.log(searchResponse);
-      // console.log('searchResults');
-      // console.log(searchResults);
-      // console.log('resultsMap');
-      // console.log(resultsMap);
-
       this.setState({
         homeDisplay: resultsMap,
       });
-
-      // if (query === undefined) {
-      //   this.setState({
-      //     homeDisplay: searchNoneFound,
-      //   });
-      // }
     };
 
     return (
@@ -56,12 +58,18 @@ export default class Home extends React.Component {
           <input
             type="text"
             data-testid="query-input"
+            name="searchInput"
+            id="searchInput"
+            value={ searchInput }
+            onChange={ handleChange }
           />
           <button
             type="button"
             label="searchButton"
+            name="searchButton"
+            id="searchButton"
             data-testid="query-button"
-            onClick={ () => handleSearch(this.value) }
+            onClick={ () => handleSearch(searchInput) }
           />
         </div>
         <div className="displaySearch">
