@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Categories from '../components/Categories';
 import { getProductsFromCategoryAndQuery } from '../services/api';
 
@@ -81,10 +82,24 @@ export default class Home extends React.Component {
             onClick={ () => handleSearch(searchInput) }
           />
         </div>
+
+        <div>
+          <Link
+            data-testid="shopping-cart-button"
+            to="/cart"
+          >
+            Enter
+          </Link>
+        </div>
+
         <div className="displaySearch">
           { state.homeDisplay }
+          { // COMENTEI NO MERGE - JAIDER
+            // <input type="text"/>
+          }
         </div>
       </>
+
     );
   }
 }
