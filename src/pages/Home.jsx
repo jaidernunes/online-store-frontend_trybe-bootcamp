@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Categories from '../components/Categories';
-import { getProductsFromCategoryAndQuery } from '../services/api';
+import { getProductsFromCategoryAndQuery, getCategories } from '../services/api';
 
 const homeInitialMessage = (
   <h3 data-testid="home-initial-message">
@@ -14,11 +14,22 @@ export default class Home extends React.Component {
   state = {
     homeDisplay: homeInitialMessage,
     searchInput: '',
+    categoriesList: [],
+  };
+
+  componentDidMount() {
+    this.getListCategories();
+  }
+
+  getListCategories = async () => {
+    const categoriesList = await getCategories();
+    console.log(categoriesList);
+    this.setState({ categoriesList });
   };
 
   render() {
     const { state } = this;
-    const { searchInput } = state;
+    const { searchInput, categoriesList } = state;
 
     const handleChange = ({ target }) => {
       const { name } = target;
@@ -56,14 +67,21 @@ export default class Home extends React.Component {
 
     return (
       <>
-        <Categories />
         {/* <input
           type="text"
-        />
-        <div>
+          />
+          <div>
           <h3 data-testid="home-initial-message">
-            Digite algum termo de pesquisa ou escolha uma categoria.
-          </h3> */}
+          Digite algum termo de pesquisa ou escolha uma categoria.
+        </h3> */}
+        <h3>Categorias:</h3>
+        { categoriesList.map((c) => (
+          <Categories
+            key={ c.id }
+            id={ c.id }
+            name={ c.name }
+          />
+        )) }
         <div className="searchBox">
           <input
             type="text"
@@ -82,7 +100,6 @@ export default class Home extends React.Component {
             onClick={ () => handleSearch(searchInput) }
           />
         </div>
-
         <div>
           <Link
             data-testid="shopping-cart-button"
