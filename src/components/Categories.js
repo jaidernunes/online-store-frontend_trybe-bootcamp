@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import { getProductsFromCategory } from '../services/api';
 
 class Categories extends React.Component {
@@ -22,7 +23,6 @@ class Categories extends React.Component {
 
   productSelected = async (id) => {
     const categorySelected = await getProductsFromCategory(id);
-    console.log(categorySelected);
     console.log(id);
     this.setState({ categorySelected: categorySelected.results });
   };
@@ -47,6 +47,12 @@ class Categories extends React.Component {
                 <p>{item.title}</p>
                 <img src={ item.thumbnail } alt={ item.title } />
                 <p>{item.price}</p>
+                <Link
+                  to={ `details/${item.id}` }
+                  data-testid="product-detail-link"
+                >
+                  Detalhes
+                </Link>
               </div>
             ))
           }

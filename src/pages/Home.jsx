@@ -23,7 +23,7 @@ export default class Home extends React.Component {
 
   getListCategories = async () => {
     const categoriesList = await getCategories();
-    console.log(categoriesList);
+    // console.log(categoriesList);
     this.setState({ categoriesList });
   };
 
@@ -58,6 +58,12 @@ export default class Home extends React.Component {
           <h4>{item.title}</h4>
           <img src={ item.thumbnail } alt={ item.title } />
           <h5>{item.price}</h5>
+          <Link
+            to={ `details/${item.id}` }
+            data-testid="product-detail-link"
+          >
+            Detalhes
+          </Link>
         </div>
       ));
       this.setState({
