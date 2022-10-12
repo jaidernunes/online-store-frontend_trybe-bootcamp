@@ -104,7 +104,9 @@ export default class Home extends React.Component {
             id="searchButton"
             data-testid="query-button"
             onClick={ () => handleSearch(searchInput) }
-          />
+          >
+            BUSCA
+          </button>
         </div>
         <div>
           <Link

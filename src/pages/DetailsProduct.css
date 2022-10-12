@@ -1,0 +1,20 @@
+button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  outline: none;
+}
+
+.on {
+  color: black;
+}
+
+.off {
+  color: #ccc;
+}
+
+.sendButton {
+  background-color: lightgray;
+  border: 1px solid black;
+  cursor: pointer;
+}
