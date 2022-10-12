@@ -4,9 +4,6 @@ import PropTypes from 'prop-types';
 import { getProductById } from '../services/api';
 import './DetailsProduct.css';
 
-// const formErrorMsg = (<h3 data-testid="error-msg">Campos inválidos</h3>);
-// const { product: { id } } = this.state;
-
 class DetailsProduct extends React.Component {
   constructor() {
     super();
@@ -28,11 +25,6 @@ class DetailsProduct extends React.Component {
     this.setState({
       product,
     });
-    // const formErrorMsg = (<h3 data-testid="error-msg">Campos inválidos</h3>);
-
-    // LOG JAIDER
-    console.log(product);
-    console.log(getReviews);
 
     localStorage.setItem(id, JSON.stringify((getReviews || [])));
   }
@@ -67,15 +59,8 @@ class DetailsProduct extends React.Component {
         text: detailEvaluation,
         rating,
       };
-      // CRIAR FUNÇAO PRA VALIDAR E GUARDAR O REVIEW NO STATE
-      // // RegEx from https://www.w3resource.com/javascript/form/email-validation.php
 
-      // const validateEmail = (email) => String(email)
-      //   .toLowerCase()
-      //   .match(
-      //     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-      //   );
-
+      // // RegEx from https://pt.stackoverflow.com/questions/1386/express%C3%A3o-regular-para-valida%C3%A7%C3%A3o-de-e-mail
       const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 
       if (emailRegex.test(detailEmail) && rating > 0) {
@@ -110,7 +95,6 @@ class DetailsProduct extends React.Component {
         <img data-testid="product-detail-image" src={ thumbnail } alt={ title } />
         <Link to="/cart" data-testid="shopping-cart-button">Carrinho de compras</Link>
 
-        {/* REVIEW FORM - JAIDER */}
         <div>
           Avaliações
           <form action="">
@@ -175,7 +159,20 @@ class DetailsProduct extends React.Component {
                     {review.email}
                   </div>
                   <div data-testid="review-card-rating">
-                    {review.rating}
+                    {/* {review.rating} */}
+                    {[...Array(five)].map((star, i) => {
+                      i += 1;
+                      return (
+                        <button
+                          type="button"
+                          key={ `star${i}` }
+                          className={ i <= review.rating ? 'on' : 'off' }
+                          onClick={ () => setRating(i) }
+                        >
+                          <span className="star">&#9733;</span>
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
                 <div data-testid="review-card-evaluation">
