@@ -41,3 +41,19 @@
     transform: rotate(360deg);
   }
 }
+
+/* STAR BUTTON CSS JAIDER */
+button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  outline: none;
+}
+
+.on {
+  color: black;
+}
+
+.off {
+  color: #ccc;
+}
