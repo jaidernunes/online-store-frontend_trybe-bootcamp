@@ -1,9 +1,13 @@
 import React from 'react';
-import PropTypes, { array } from 'prop-types';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import Categories from '../components/Categories';
-import { getProductsFromCategoryAndQuery, getCategories, getProductById } from '../services/api';
-import saveCartItems from '../helpers/saveCartItems';
+import {
+  getProductsFromCategoryAndQuery,
+  getCategories,
+} from '../services/api';
+import cartAdd from '../helpers/cartAdd';
+
 // const listaNoCarrinho = document.querySelector('ol.cart__items'); // tag do tipo <ol> // usei querySelecctor pois facilita trabalhar com forEach
 
 const homeInitialMessage = (
@@ -20,7 +24,6 @@ class Home extends React.Component {
       homeDisplay: homeInitialMessage,
       searchInput: '',
       categoriesList: [],
-      array: [],
     };
   }
 
@@ -29,15 +32,9 @@ class Home extends React.Component {
     // this.callCreateCartItemElement();
   }
 
-  componentDidUpdate() {
-    this.callCreateCartItemElement();
-  }
-
-  getListCategories = async () => {
-    const categoriesList = await getCategories();
-    // console.log(categoriesList);
-    this.setState({ categoriesList });
-  };
+  //   componentDidUpdate() {
+  //     this.callCreateCartItemElement();
+  //   }
 
   handleChange = ({ target }) => {
     const { name } = target;
@@ -48,49 +45,11 @@ class Home extends React.Component {
     });
   };
 
-  // ramiro: inicio funções req 8
-  createCartItemElement = ({ id, title, price }) => {
-    const li = document.createElement('li');
-    li.className = 'cart__item';
-    li.innerText = `ID: ${id} | TITLE: ${title} | PRICE: $${price}`;
-    // li.addEventListener('click', cartRemoveItem(li));
-    console.log(li);
-    return li;
+  getListCategories = async () => {
+    const categoriesList = await getCategories();
+    // console.log(categoriesList);
+    this.setState({ categoriesList });
   };
-
-  callCreateCartItemElement = () => {
-    const botoesAddCart = document.querySelectorAll('.item__add');
-    // console.log(botoesAddCart);
-    // console.log(this.props);
-    // vou pegar todos os botoes add ao carrinho e mapea-los com forEach
-    botoesAddCart.forEach((botao) => {
-      botao.addEventListener('click', async () => {
-        // console.log(botao);
-        const idDoProduto = botao.id;
-        console.log(idDoProduto);
-        console.log('entrei');
-        const data = await getProductById(idDoProduto);// getProductById tem a mesma utilidade de fetchItem de shoppingCart project
-        // console.log(data);
-
-        const li = document.createElement('li');
-        li.className = 'cart__item';
-        li.innerText = `ID: ${data.id} | TITLE: ${data.title} | PRICE: $${data.price}`;
-        // li.addEventListener('click', cartRemoveItem(li));
-        // console.log(li.innerHTML);
-        const arrayAux = [];
-
-        arrayAux.push(li);
-        // console.log(arrayAux);
-        this.setState((prevState) => ({
-          array: [...prevState.array, arrayAux],
-        }), () => console.log(this.state.array));
-        // // alert(fetchItemProduto);
-        // listaNoCarrinho.innerHTML(li);
-        // console.log(array);
-        // saveCartItems(arrayAux);
-      });
-    });
-  }; // ramiro: fim funções req 8
 
   handleSearch = async (query) => {
     const searchResponse = await getProductsFromCategoryAndQuery(undefined, query);
@@ -119,19 +78,17 @@ class Home extends React.Component {
         </Link>
         {/* ramiro: botao req 8 */}
         <button
-          data-testid="product-add-to-cart"
           type="button"
-          label="cartButton"
-          name="cartButton"
-          className="item__add"
-          id={ `${item.id}` }
-        //   onClick={ () => this.callCreateCartItemElement() }
+          data-testid="product-add-to-cart"
+          name="addToCart"
+          // className="item__add"
+          id={ item.id }
+          onClick={ () => cartAdd(item) }
         >
           Adicionar ao carrinho
         </button>
       </div>
     ));
-    //   callCreateCartItemElement();
     this.setState({
       homeDisplay: resultsMap,
     });
@@ -143,13 +100,6 @@ class Home extends React.Component {
 
     return (
       <>
-        {/* <input
-          type="text"
-          />
-          <div>
-          <h3 data-testid="home-initial-message">
-          Digite algum termo de pesquisa ou escolha uma categoria.
-        </h3> */}
         <h3>Categorias:</h3>
         { categoriesList.map((c) => (
           <Categories
@@ -173,7 +123,7 @@ class Home extends React.Component {
             name="searchButton"
             id="searchButton"
             data-testid="query-button"
-            onClick={ () => handleSearch(searchInput) }
+            onClick={ () => this.handleSearch(searchInput) }
           >
             BUSCA
           </button>

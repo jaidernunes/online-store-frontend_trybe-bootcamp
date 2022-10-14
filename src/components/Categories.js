@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { getProductsFromCategory } from '../services/api';
+import cartAdd from '../helpers/cartAdd';
 
 class Categories extends React.Component {
   constructor() {
@@ -20,6 +21,10 @@ class Categories extends React.Component {
   // const categoriesList = await getCategories();
   // this.setState({ categoriesList });
   // };
+
+  //   componentDidUpdate() {
+  //     this.callCreateCartItemElementII();
+  //   }
 
   productSelected = async (id) => {
     const categorySelected = await getProductsFromCategory(id);
@@ -53,6 +58,16 @@ class Categories extends React.Component {
                 >
                   Detalhes
                 </Link>
+                <button
+                  type="button"
+                  data-testid="product-add-to-cart"
+                  className="categorieButton"
+                  name="addToCart"
+                  id={ item.id }
+                  onClick={ () => cartAdd(item) }
+                >
+                  Adicionar ao carrinho
+                </button>
               </div>
             ))
           }
@@ -63,8 +78,8 @@ class Categories extends React.Component {
 }
 
 Categories.propTypes = {
-  id: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
-};
+  id: PropTypes.string,
+  name: PropTypes.string,
+}.isRequired;// ramiro: coloquei o isRequired aqui
 
 export default Categories;

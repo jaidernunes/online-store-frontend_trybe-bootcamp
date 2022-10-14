@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { getProductById } from '../services/api';
 import './DetailsProduct.css';
+import cartAdd from '../helpers/cartAdd';
 
 class DetailsProduct extends React.Component {
   constructor() {
@@ -35,7 +36,8 @@ class DetailsProduct extends React.Component {
       formError,
       detailEmail,
       rating,
-      detailEvaluation } = this.state;
+      detailEvaluation,
+      product } = this.state;
     const five = 5;
 
     const getReviews = JSON.parse(localStorage.getItem(id));
@@ -183,6 +185,16 @@ class DetailsProduct extends React.Component {
 
           </div>
         </div>
+        <button
+          type="button"
+          data-testid="product-detail-add-to-cart"
+          name="addToCart"
+          // className="item__add"
+          // id={ item.id }
+          onClick={ () => cartAdd(product) }
+        >
+          Adicionar ao carrinho
+        </button>
       </div>
     );
   }
@@ -193,7 +205,7 @@ DetailsProduct.propTypes = {
     params: PropTypes.shape({
       id: PropTypes.string.isRequired,
     }),
-  }).isRequired,
-};
+  }),
+}.isRequired;
 
 export default DetailsProduct;
