@@ -1,9 +1,13 @@
 import React from 'react';
-import PropTypes, { array } from 'prop-types';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import Categories from '../components/Categories';
-import { getProductsFromCategoryAndQuery, getCategories, getProductById } from '../services/api';
+import {
+  getProductsFromCategoryAndQuery,
+  getCategories,
+} from '../services/api';
 import saveCartItems from '../helpers/saveCartItems';
+
 // const listaNoCarrinho = document.querySelector('ol.cart__items'); // tag do tipo <ol> // usei querySelecctor pois facilita trabalhar com forEach
 
 const homeInitialMessage = (
@@ -20,7 +24,6 @@ class Home extends React.Component {
       homeDisplay: homeInitialMessage,
       searchInput: '',
       categoriesList: [],
-      array: [],
     };
   }
 
@@ -29,15 +32,9 @@ class Home extends React.Component {
     // this.callCreateCartItemElement();
   }
 
-  componentDidUpdate() {
-    this.callCreateCartItemElement();
-  }
-
-  getListCategories = async () => {
-    const categoriesList = await getCategories();
-    // console.log(categoriesList);
-    this.setState({ categoriesList });
-  };
+  //   componentDidUpdate() {
+  //     this.callCreateCartItemElement();
+  //   }
 
   handleChange = ({ target }) => {
     const { name } = target;
@@ -49,48 +46,61 @@ class Home extends React.Component {
   };
 
   // ramiro: inicio funções req 8
-  createCartItemElement = ({ id, title, price }) => {
-    const li = document.createElement('li');
-    li.className = 'cart__item';
-    li.innerText = `ID: ${id} | TITLE: ${title} | PRICE: $${price}`;
-    // li.addEventListener('click', cartRemoveItem(li));
-    console.log(li);
-    return li;
-  };
 
-  callCreateCartItemElement = () => {
-    const botoesAddCart = document.querySelectorAll('.item__add');
+  callCreateCartItemElement = (item) => {
+    // https://stackoverflow.com/questions/7084557/select-all-elements-with-a-data-xxx-attribute-without-using-jquery
+    // const botoesAddCart = document.querySelectorAll('[data-testid=product-add-to-cart]');
     // console.log(botoesAddCart);
-    // console.log(this.props);
+
     // vou pegar todos os botoes add ao carrinho e mapea-los com forEach
-    botoesAddCart.forEach((botao) => {
-      botao.addEventListener('click', async () => {
-        // console.log(botao);
-        const idDoProduto = botao.id;
-        console.log(idDoProduto);
-        console.log('entrei');
-        const data = await getProductById(idDoProduto);// getProductById tem a mesma utilidade de fetchItem de shoppingCart project
-        // console.log(data);
+    // botoesAddCart.forEach((botao) => {
+    // botao.addEventListener('click', async () => {
+    // console.log(botao);
+    // console.log(addItem);
+    // const idDoProduto = botao.id;
+    // console.log(idDoProduto);
+    // console.log('entrei');
+    // const data = await getProductById(idDoProduto);// getProductById tem a mesma utilidade de fetchItem de shoppingCart project
+    // console.log(data);
+    const lista = JSON.parse(localStorage.getItem('cartItems') || '[]');
+    let cont = 1;
+    let auxIndex = 0;
+    for (let index = 0; index < lista.length; index += 1) {
+      // console.log(`index do for home ${index}`);
+      if (item.id === lista[index].ID) {
+        // console.log('entrei');
+        cont = 1 + lista[index].QUANTITY;
 
-        const li = document.createElement('li');
-        li.className = 'cart__item';
-        li.innerText = `ID: ${data.id} | TITLE: ${data.title} | PRICE: $${data.price}`;
-        // li.addEventListener('click', cartRemoveItem(li));
-        // console.log(li.innerHTML);
-        const arrayAux = [];
+        if (cont > 1) { auxIndex = index; }
+      }
+    }
+    // // console.log(cont);
+    // // const call = this.createCartItemElement(data);
+    const call = {
+      ID: item.id,
+      TITLE: item.title,
+      PRICE: item.price,
+      QUANTITY: cont,
+    };
+    // console.log(call);
+    // https://pt.stackoverflow.com/questions/329223/armazenar-um-array-de-objetos-em-um-local-storage-com-js
+    // console.log(typeof lista);
+    if (cont === 1) {
+      lista.push(call);
+    } else {
+      lista[auxIndex] = call;
+    }
 
-        arrayAux.push(li);
-        // console.log(arrayAux);
-        this.setState((prevState) => ({
-          array: [...prevState.array, arrayAux],
-        }), () => console.log(this.state.array));
-        // // alert(fetchItemProduto);
-        // listaNoCarrinho.innerHTML(li);
-        // console.log(array);
-        // saveCartItems(arrayAux);
-      });
-    });
+    saveCartItems(lista);
+    // });
+    // });
   }; // ramiro: fim funções req 8
+
+  getListCategories = async () => {
+    const categoriesList = await getCategories();
+    // console.log(categoriesList);
+    this.setState({ categoriesList });
+  };
 
   handleSearch = async (query) => {
     const searchResponse = await getProductsFromCategoryAndQuery(undefined, query);
@@ -119,19 +129,18 @@ class Home extends React.Component {
         </Link>
         {/* ramiro: botao req 8 */}
         <button
-          data-testid="product-add-to-cart"
           type="button"
-          label="cartButton"
-          name="cartButton"
-          className="item__add"
-          id={ `${item.id}` }
-        //   onClick={ () => this.callCreateCartItemElement() }
+          data-testid="product-add-to-cart"
+          name="addToCart"
+          // className="item__add"
+          id={ item.id }
+          onClick={ () => this.callCreateCartItemElement(item) }
         >
           Adicionar ao carrinho
         </button>
       </div>
     ));
-    //   callCreateCartItemElement();
+
     this.setState({
       homeDisplay: resultsMap,
     });
@@ -140,16 +149,10 @@ class Home extends React.Component {
   render() {
     const { state } = this;
     const { searchInput, categoriesList } = state;
+    // console.log(`No render: ${listaNoCarrinho}`);
 
     return (
       <>
-        {/* <input
-          type="text"
-          />
-          <div>
-          <h3 data-testid="home-initial-message">
-          Digite algum termo de pesquisa ou escolha uma categoria.
-        </h3> */}
         <h3>Categorias:</h3>
         { categoriesList.map((c) => (
           <Categories
@@ -205,8 +208,31 @@ class Home extends React.Component {
 Home.propTypes = {
   handleChange: PropTypes.func,
   handleSearch: PropTypes.func,
-  createCartItemElement: PropTypes.func,
   callCreateCartItemElement: PropTypes.func,
 }.isRequired;
 
 export default Home;
+
+// {searchResults.map((item) => (
+// <div key={ item.id } data-testid="product">
+// <h4>{item.title}</h4>
+// <img src={ item.thumbnail } alt={ item.title } />
+// <h5>{item.price}</h5>
+// <Link
+// to={ `details/${item.id}` }
+// data-testid="product-detail-link"
+// >
+// Detalhes
+// </Link>
+
+// <button
+// /* ramiro: botao req 8 */
+// data-testid="product-add-to-cart"
+// type="button"
+// name="addToCart"
+// id={ item.id }
+// >
+// Adicionar ao carrinho
+// </button>
+// </div>
+// ))}
