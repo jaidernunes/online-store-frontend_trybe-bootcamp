@@ -6,7 +6,7 @@ import {
   getProductsFromCategoryAndQuery,
   getCategories,
 } from '../services/api';
-import saveCartItems from '../helpers/saveCartItems';
+import cartAdd from '../helpers/cartAdd';
 
 // const listaNoCarrinho = document.querySelector('ol.cart__items'); // tag do tipo <ol> // usei querySelecctor pois facilita trabalhar com forEach
 
@@ -44,57 +44,6 @@ class Home extends React.Component {
       [name]: value,
     });
   };
-
-  // ramiro: inicio funções req 8
-
-  callCreateCartItemElement = (item) => {
-    // https://stackoverflow.com/questions/7084557/select-all-elements-with-a-data-xxx-attribute-without-using-jquery
-    // const botoesAddCart = document.querySelectorAll('[data-testid=product-add-to-cart]');
-    // console.log(botoesAddCart);
-
-    // vou pegar todos os botoes add ao carrinho e mapea-los com forEach
-    // botoesAddCart.forEach((botao) => {
-    // botao.addEventListener('click', async () => {
-    // console.log(botao);
-    // console.log(addItem);
-    // const idDoProduto = botao.id;
-    // console.log(idDoProduto);
-    // console.log('entrei');
-    // const data = await getProductById(idDoProduto);// getProductById tem a mesma utilidade de fetchItem de shoppingCart project
-    // console.log(data);
-    const lista = JSON.parse(localStorage.getItem('cartItems') || '[]');
-    let cont = 1;
-    let auxIndex = 0;
-    for (let index = 0; index < lista.length; index += 1) {
-      // console.log(`index do for home ${index}`);
-      if (item.id === lista[index].ID) {
-        // console.log('entrei');
-        cont = 1 + lista[index].QUANTITY;
-
-        if (cont > 1) { auxIndex = index; }
-      }
-    }
-    // // console.log(cont);
-    // // const call = this.createCartItemElement(data);
-    const call = {
-      ID: item.id,
-      TITLE: item.title,
-      PRICE: item.price,
-      QUANTITY: cont,
-    };
-    // console.log(call);
-    // https://pt.stackoverflow.com/questions/329223/armazenar-um-array-de-objetos-em-um-local-storage-com-js
-    // console.log(typeof lista);
-    if (cont === 1) {
-      lista.push(call);
-    } else {
-      lista[auxIndex] = call;
-    }
-
-    saveCartItems(lista);
-    // });
-    // });
-  }; // ramiro: fim funções req 8
 
   getListCategories = async () => {
     const categoriesList = await getCategories();
@@ -134,7 +83,7 @@ class Home extends React.Component {
           name="addToCart"
           // className="item__add"
           id={ item.id }
-          onClick={ () => this.callCreateCartItemElement(item) }
+          onClick={ () => cartAdd(item) }
         >
           Adicionar ao carrinho
         </button>
@@ -208,7 +157,6 @@ class Home extends React.Component {
 Home.propTypes = {
   handleChange: PropTypes.func,
   handleSearch: PropTypes.func,
-  callCreateCartItemElement: PropTypes.func,
 }.isRequired;
 
 export default Home;
