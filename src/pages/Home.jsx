@@ -88,7 +88,6 @@ class Home extends React.Component {
         </button>
       </div>
     ));
-
     this.setState({
       homeDisplay: resultsMap,
     });
@@ -97,7 +96,6 @@ class Home extends React.Component {
   render() {
     const { state } = this;
     const { searchInput, categoriesList } = state;
-    // console.log(`No render: ${listaNoCarrinho}`);
 
     return (
       <>
@@ -126,8 +124,7 @@ class Home extends React.Component {
             data-testid="query-button"
             onClick={ () => this.handleSearch(searchInput) }
           >
-            Search
-            {/* ramiro: adicionei search para melhor especificar e destacar o botao */}
+            BUSCA
           </button>
         </div>
         <div>
@@ -156,6 +153,8 @@ class Home extends React.Component {
 Home.propTypes = {
   handleChange: PropTypes.func,
   handleSearch: PropTypes.func,
+  createCartItemElement: PropTypes.func,
+  callCreateCartItemElement: PropTypes.func,
 }.isRequired;
 
 export default Home;
