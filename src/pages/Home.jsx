@@ -4,8 +4,7 @@ import { Link } from 'react-router-dom';
 import Categories from '../components/Categories';
 import {
   getProductsFromCategoryAndQuery,
-  getCategories,
-} from '../services/api';
+  getCategories } from '../services/api';
 import cartAdd from '../helpers/cartAdd';
 
 // const listaNoCarrinho = document.querySelector('ol.cart__items'); // tag do tipo <ol> // usei querySelecctor pois facilita trabalhar com forEach
@@ -160,27 +159,3 @@ Home.propTypes = {
 }.isRequired;
 
 export default Home;
-
-// {searchResults.map((item) => (
-// <div key={ item.id } data-testid="product">
-// <h4>{item.title}</h4>
-// <img src={ item.thumbnail } alt={ item.title } />
-// <h5>{item.price}</h5>
-// <Link
-// to={ `details/${item.id}` }
-// data-testid="product-detail-link"
-// >
-// Detalhes
-// </Link>
-
-// <button
-// /* ramiro: botao req 8 */
-// data-testid="product-add-to-cart"
-// type="button"
-// name="addToCart"
-// id={ item.id }
-// >
-// Adicionar ao carrinho
-// </button>
-// </div>
-// ))}
